@@ -1,0 +1,458 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# Blank line between prompts
+add_newline = true
+
+# Dracula palette (defined at the bottom of this file)
+palette = "dracula"
+
+# ---------------------------------------------------------------------------
+# Core prompt pieces
+# ---------------------------------------------------------------------------
+
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+
+[username]
+format = "[$user]($style) on "
+style_user = "bold cyan"
+style_root = "bold red"
+
+[hostname]
+ssh_symbol = " "
+style = "bold purple"
+
+[directory]
+style = "bold green"
+read_only = " 󰌾"
+read_only_style = "bold red"
+truncation_length = 3
+
+[cmd_duration]
+min_time = 0
+show_milliseconds = true
+style = "bold yellow"
+format = "took [$duration]($style) "
+
+[status]
+symbol = " "
+style = "bold red"
+disabled = false
+
+[sudo]
+symbol = " "
+style = "bold purple"
+
+[shlvl]
+symbol = "󰹍 "
+style = "bold comment"
+
+[memory_usage]
+symbol = "󰍛 "
+style = "bold comment"
+
+[battery]
+full_symbol = "󰁹 "
+charging_symbol = "󰂄 "
+discharging_symbol = "󰂃 "
+unknown_symbol = "󰂑 "
+empty_symbol = "󰂎 "
+
+# ---------------------------------------------------------------------------
+# Version control
+# ---------------------------------------------------------------------------
+
+[git_branch]
+symbol = " "
+style = "bold pink"
+
+[git_status]
+style = "bold red"
+
+[git_commit]
+tag_symbol = "  "
+style = "bold pink"
+
+[git_state]
+style = "bold orange"
+
+[fossil_branch]
+symbol = " "
+style = "bold pink"
+
+[hg_branch]
+symbol = " "
+style = "bold pink"
+
+[pijul_channel]
+symbol = " "
+style = "bold pink"
+
+# ---------------------------------------------------------------------------
+# Cloud / infra
+# ---------------------------------------------------------------------------
+
+[aws]
+symbol = " "
+style = "bold orange"
+
+[azure]
+symbol = " "
+style = "bold cyan"
+
+[gcloud]
+symbol = "󱇶 "
+style = "bold cyan"
+
+[openstack]
+symbol = " "
+style = "bold red"
+
+[docker_context]
+symbol = " "
+style = "bold cyan"
+
+[container]
+symbol = " "
+style = "bold comment"
+
+[kubernetes]
+symbol = "󱃾 "
+style = "bold purple"
+
+[helm]
+symbol = " "
+style = "bold cyan"
+
+[terraform]
+symbol = " "
+style = "bold purple"
+
+[pulumi]
+symbol = " "
+style = "bold purple"
+
+[vagrant]
+symbol = " "
+style = "bold cyan"
+
+[nats]
+symbol = " "
+style = "bold cyan"
+
+[netns]
+symbol = "󰛳 "
+style = "bold comment"
+
+[singularity]
+symbol = " "
+style = "bold comment"
+
+[spack]
+symbol = " "
+style = "bold cyan"
+
+[guix_shell]
+symbol = " "
+style = "bold yellow"
+
+[nix_shell]
+symbol = " "
+style = "bold cyan"
+
+[direnv]
+symbol = " "
+style = "bold yellow"
+
+[opa]
+symbol = " "
+style = "bold cyan"
+
+# ---------------------------------------------------------------------------
+# Languages & runtimes
+# ---------------------------------------------------------------------------
+
+[c]
+symbol = " "
+style = "bold cyan"
+
+[cpp]
+symbol = " "
+style = "bold cyan"
+
+[cmake]
+symbol = " "
+style = "bold cyan"
+
+[cobol]
+symbol = " "
+style = "bold cyan"
+
+[crystal]
+symbol = " "
+style = "bold red"
+
+[dart]
+symbol = " "
+style = "bold cyan"
+
+[deno]
+symbol = " "
+style = "bold green"
+
+[elixir]
+symbol = " "
+style = "bold purple"
+
+[elm]
+symbol = " "
+style = "bold cyan"
+
+[erlang]
+symbol = " "
+style = "bold red"
+
+[fennel]
+symbol = " "
+style = "bold yellow"
+
+[fortran]
+symbol = " "
+style = "bold purple"
+
+[gleam]
+symbol = " "
+style = "bold pink"
+
+[golang]
+symbol = " "
+style = "bold cyan"
+
+[gradle]
+symbol = " "
+style = "bold cyan"
+
+[haskell]
+symbol = " "
+style = "bold purple"
+
+[haxe]
+symbol = " "
+style = "bold orange"
+
+[java]
+symbol = " "
+style = "bold red"
+
+[julia]
+symbol = " "
+style = "bold purple"
+
+[kotlin]
+symbol = " "
+style = "bold purple"
+
+[lua]
+symbol = " "
+style = "bold cyan"
+
+[maven]
+symbol = " "
+style = "bold red"
+
+[meson]
+symbol = "󰔷 "
+style = "bold cyan"
+
+[mojo]
+symbol = "󰈸 "
+style = "bold orange"
+
+[nim]
+symbol = " "
+style = "bold yellow"
+
+[nodejs]
+symbol = " "
+style = "bold green"
+
+[bun]
+symbol = " "
+style = "bold yellow"
+
+[ocaml]
+symbol = " "
+style = "bold orange"
+
+[odin]
+symbol = "󰟢 "
+style = "bold cyan"
+
+[perl]
+symbol = " "
+style = "bold cyan"
+
+[php]
+symbol = " "
+style = "bold purple"
+
+[purescript]
+symbol = " "
+style = "bold foreground"
+
+[python]
+symbol = " "
+style = "bold yellow"
+
+[conda]
+symbol = " "
+style = "bold green"
+
+[pixi]
+symbol = "󰏗 "
+style = "bold green"
+
+[raku]
+symbol = "󱖊 "
+style = "bold pink"
+
+[red]
+symbol = "󱍼 "
+style = "bold red"
+
+[rlang]
+symbol = "󰟔 "
+style = "bold cyan"
+
+[ruby]
+symbol = " "
+style = "bold red"
+
+[rust]
+symbol = "󱘗 "
+style = "bold orange"
+
+[scala]
+symbol = " "
+style = "bold red"
+
+[solidity]
+symbol = " "
+style = "bold cyan"
+
+[swift]
+symbol = " "
+style = "bold orange"
+
+[typst]
+symbol = " "
+style = "bold cyan"
+
+[vlang]
+symbol = " "
+style = "bold cyan"
+
+[xmake]
+symbol = " "
+style = "bold cyan"
+
+[zig]
+symbol = " "
+style = "bold yellow"
+
+[dotnet]
+symbol = " "
+style = "bold purple"
+
+[buf]
+symbol = " "
+style = "bold cyan"
+
+[package]
+symbol = "󰏗 "
+style = "bold yellow"
+
+# ---------------------------------------------------------------------------
+# OS symbols
+# ---------------------------------------------------------------------------
+
+[os]
+style = "bold purple"
+
+[os.symbols]
+AIX = " "
+AlmaLinux = " "
+Alpaquita = " "
+Alpine = " "
+ALTLinux = " "
+Amazon = " "
+Android = " "
+AOSC = " "
+Arch = " "
+Artix = " "
+Bluefin = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Elementary = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = " "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = " "
+InstantOS = " "
+Ios = "󰀷 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = " "
+OpenCloudOS = " "
+openEuler = " "
+openSUSE = " "
+OracleLinux = "󰺡 "
+PikaOS = " "
+Pop = " "
+Raspbian = " "
+Redhat = "󱄛 "
+RedHatEnterprise = "󱄛 "
+Redox = "󰀘 "
+RockyLinux = " "
+Solus = " "
+SUSE = " "
+Ubuntu = " "
+Ultramarine = " "
+Unknown = " "
+Uos = " "
+Void = " "
+Windows = "󰍲 "
+Zorin = " "
+
+# ---------------------------------------------------------------------------
+# Dracula color palette
+# ---------------------------------------------------------------------------
+
+[palettes.dracula]
+background = "#282a36"
+current_line = "#44475a"
+foreground = "#f8f8f2"
+comment = "#6272a4"
+cyan = "#8be9fd"
+green = "#50fa7b"
+orange = "#ffb86c"
+pink = "#ff79c6"
+purple = "#bd93f9"
+red = "#ff5555"
+yellow = "#f1fa8c"
