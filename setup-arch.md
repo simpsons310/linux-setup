@@ -34,6 +34,22 @@
   - [3.7 Setup face recognition (if hardware support)](#37-setup-face-recognition-if-hardware-support)
     - [3.7.1 Check if hardware is avaiable for face recognition](#371-check-if-hardware-is-avaiable-for-face-recognition)
     - [3.7.2 Configure face recognition](#372-configure-face-recognition)
+  - [3.8 Install Postman](#38-install-postman)
+  - [3.9 Install AnyDesk](#39-install-anydesk)
+  - [3.10 Enable Hibernate mode](#310-enable-hibernate-mode)
+    - [3.10.1 Check system requirement before setup](#3101-check-system-requirement-before-setup)
+    - [3.10.2 Create a Swapfile](#3102-create-a-swapfile)
+    - [3.10.3 Configure resume parameters](#3103-configure-resume-parameters)
+    - [3.10.4 Add resume hook](#3104-add-resume-hook)
+    - [3.10.5 Setup hibernate command](#3105-setup-hibernate-command)
+    - [3.10.6 Add "Hibernate" button](#3106-add-hibernate-button)
+  - [3.11 Remote access (GNOME Remote Desktop + Tailscale)](#311-remote-access-gnome-remote-desktop--tailscale)
+    - [3.11.1 Install packages](#3111-install-packages)
+    - [3.11.2 Log in to Tailscale](#3112-log-in-to-tailscale)
+    - [3.11.3 Turn on GNOME Remote Desktop](#3113-turn-on-gnome-remote-desktop)
+    - [3.11.4 Keep the machine reachable](#3114-keep-the-machine-reachable)
+    - [3.11.5 Connect](#3115-connect)
+    - [3.11.6 Daily flow](#3116-daily-flow)
 - [4. TODOs](#4-todos)
   - [4.1 Later](#41-later)
 
@@ -211,6 +227,15 @@ sudo pacman -S noto-fonts noto-fonts-cjk noto-fonts-emoji ttf-liberation
 sudo pacman -S gst-plugins-good gst-plugins-bad gst-plugins-ugly gst-libav ffmpeg
 ```
 
+- Install the GNOME interface fonts Adwaita Sans and Adwaita Mono (GNOME 48+ installs them by default) `sudo pacman -S adwaita-fonts`
+- Set fonts in Tweaks > Fonts, or run
+
+  ```bash
+  gsettings set org.gnome.desktop.interface font-name 'Adwaita Sans 11'           # Interface Text
+  gsettings set org.gnome.desktop.interface document-font-name 'Adwaita Sans 11'  # Document Text
+  gsettings set org.gnome.desktop.interface monospace-font-name 'Adwaita Mono 13' # Monospace Text
+  ```
+
 ### 2.5 Setup bluetooth
 
 - Enable bluetooth service `sudo systemctl enable --now bluetooth.service`
@@ -300,6 +325,7 @@ ln -s ~/.local/share/applications/chrome-personal.desktop ~/Desktop/
   - Tiling shell
   - Emoji Copy
   - Blur my Shell
+    - If menus, Quick Settings or the input method popup (Input Method Panel) show a rectangular background behind their rounded corners: open the extension's settings > Pop-up > turn off blur. Newer versions blur popups with fixed corner radii that may not match the shell theme. Older versions do not have this option
   - Desktop Icons NG (DING)
   - Power Off Options
 
@@ -334,7 +360,9 @@ ln -s ~/.local/share/applications/chrome-personal.desktop ~/Desktop/
   font_size 11
   ```
 
-- Set `fish` to default shell `chsh -s /usr/bin/fish`
+- Set `fish` as the default shell `chsh -s /usr/bin/fish`
+  - Log out and log back in for it to apply to new terminals
+  - Check `getent passwd $USER | cut -d: -f7` prints `/usr/bin/fish`
 - Activate the `starship` prompt
 
 ```bash
@@ -343,20 +371,15 @@ echo 'starship init fish | source' >> ~/.config/fish/config.fish
 exec fish
 ```
 
-- Set starship preset `starship preset nerd-font-symbols -o ~/.config/starship.toml`
-  - To select other preset, use `starship preset -l` to list all available presets then run above command with desired preset
-- UPDATE: use template configuration file `starship.toml` (copy to `~/.config` to activate configuration)
-- Add some popular extra configuration in `~/.config/starship.toml` then add these lines
+- Configure `starship` with [starship-dracula.toml](starship-dracula.toml) from this repo: Nerd Font symbols, a Dracula color palette, command duration and exit status
+  - Download it to `~/.config/starship.toml`
 
-  ```toml
-  # Blank line between prompts
-  add_newline = true
-
-  # Show command duration for slow commands
-  [cmd_duration]
-  min_time = 2000
-  format = "took [$duration](bold yellow) "
+  ```bash
+  curl -fsSL https://raw.githubusercontent.com/simpsons310/linux-setup/main/starship-dracula.toml -o ~/.config/starship.toml
   ```
+
+  - Or, from a clone of this repo `cp starship-dracula.toml ~/.config/starship.toml`
+  - Open a new terminal to see the new prompt. The symbols need the Nerd Font set in `kitty.conf` above
 
 - Install some advanced tools `sudo pacman -S fzf zoxide eza bat ripgrep fd`
   - Activate tools and create aliases by adding these lines into `./.config/fish/config.fish`
@@ -637,6 +660,67 @@ sudo systemctl restart systemd-logind   # logs you out
 #### 3.10.6 Add "Hibernate" button
 
 - Install Gnome extenstion "Power Off Options"
+
+### 3.11 Remote access (GNOME Remote Desktop + Tailscale)
+
+GNOME Remote Desktop is GNOME's built-in RDP server. Tailscale connects your devices over a private network, so you do not open any port on the router (it also works when the ISP uses CGNAT). Parsec cannot replace this: on Linux it can only be a client, not a host.
+
+GNOME Remote Desktop has two modes. Turn on both:
+
+| Mode | Works when | Notes |
+| --- | --- | --- |
+| **Remote Login** | No one is logged in on the machine (login screen) | Starts at boot. Opens its own session, with a virtual monitor, so no screen needs to be plugged in |
+| **Desktop Sharing** | You are logged in on the machine **and the screen is unlocked** | Controls the session that is already open. Locking the screen closes the connection |
+
+#### 3.11.1 Install packages
+
+- Install Tailscale and GNOME Remote Desktop (`gnome-remote-desktop` is part of the `gnome` group, so it may already be installed)
+
+  ```bash
+  sudo pacman -S tailscale gnome-remote-desktop
+  sudo systemctl enable --now tailscaled
+  ```
+
+#### 3.11.2 Log in to Tailscale
+
+- Log in `sudo tailscale up`, then open the link it prints. Use the same Tailscale account on every device
+- Find this machine's address `tailscale ip -4` (looks like `100.x.y.z`)
+- In the Tailscale admin console (<https://login.tailscale.com/admin/machines>) > this machine > `...` > **Disable key expiry**. Otherwise the machine drops off Tailscale after 180 days
+- Install Tailscale on each client device (Windows, macOS, Android, iOS) and log in with the same account
+
+#### 3.11.3 Turn on GNOME Remote Desktop
+
+- Remote Login: Settings > System > Remote Desktop > **Remote Login** > Unlock > turn on Remote Login
+  - Set a username and password. These are only for the RDP connection, not your account password
+- Desktop Sharing: same page > **Desktop Sharing** > turn on Desktop Sharing and Remote Control, then set its own username and password
+- Both modes use their own port. Check the port shown on each tab
+- Check the system service is enabled `systemctl is-enabled gnome-remote-desktop.service`
+
+#### 3.11.4 Keep the machine reachable
+
+- The login screen (GDM) has its own power settings and suspends after about 15–20 minutes by default, which cuts off Remote Login. Turn it off for the `gdm` user
+
+  ```bash
+  sudo -u gdm dbus-run-session gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+  ```
+
+- Turn off auto suspend in your own session too: Settings > Power > Automatic Suspend > When Plugged In > off
+- BIOS/UEFI: set **Restore on AC power loss** to **Power On**, so the machine starts again after a power cut
+- Full disk encryption (LUKS) blocks this flow: the machine waits for the disk password at boot, before the network is up
+
+#### 3.11.5 Connect
+
+- Client app: Windows `Remote Desktop Connection` (`mstsc`) or Windows App; macOS, iOS and Android: Windows App; Linux: Remmina `sudo pacman -S remmina freerdp`
+- Address: the machine's Tailscale IP, or its Tailscale name (MagicDNS), plus the port when it is not `3389` (`100.x.y.z:3390`)
+- Remote Login: enter the RDP username and password, then log in on the GNOME login screen with your account
+- Desktop Sharing: enter the Desktop Sharing username and password
+
+#### 3.11.6 Daily flow
+
+- Before leaving home: **log out** (do not shut down). Then connect with Remote Login from outside
+- If you forgot to log out, Remote Login shows **Session Already Running**. **Force Stop** ends the session on the machine and quits every open app, so unsaved work is lost
+- While logged in on the machine (screen unlocked), connect with Desktop Sharing instead
+- Back home: end the remote session (log out), then log in on the machine. A running remote session blocks local login the same way
 
 ## 4. TODOs
 
