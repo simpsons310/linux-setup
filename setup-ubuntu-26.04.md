@@ -29,6 +29,9 @@
   - [2.8 Install `fcitx5`](#28-install-fcitx5)
   - [2.9 Setup console](#29-setup-console)
   - [2.10 Setup themes](#210-setup-themes)
+  - [2.11 Wi-Fi tuning](#211-wi-fi-tuning)
+    - [2.11.1 Disable Wi-Fi power save](#2111-disable-wi-fi-power-save)
+    - [2.11.2 Set Wi-Fi country code](#2112-set-wi-fi-country-code)
 - [3. Applications](#3-applications)
   - [3.1 Docker Engine](#31-docker-engine)
   - [3.2 VSCode](#32-vscode)
@@ -297,6 +300,25 @@ sudo apt install fonts-noto-cjk fonts-noto-color-emoji fonts-liberation
   - To update the theme later, run the same commands again
 
 - Select theme, cursor and icons via Tweaks (the Shell theme needs the `User Themes` extension). Log out and log back in after changing the Shell theme: on Wayland GNOME Shell cannot be restarted with `Alt+F2` > `r`
+
+### 2.11 Wi-Fi tuning
+
+#### 2.11.1 Disable Wi-Fi power save
+
+- Ubuntu turns power save **on** by default (`/etc/NetworkManager/conf.d/default-wifi-powersave-on.conf`, `wifi.powersave = 3`)
+- Steps: same as [Arch 2.11.1](setup-arch.md#2111-disable-wi-fi-power-save), install `iw` with `sudo apt install iw` if missing. NetworkManager reads `conf.d` files in alphabetical order and the last value wins, so `wifi-powersave.conf` overrides the default file
+
+#### 2.11.2 Set Wi-Fi country code
+
+- Why: same as [Arch 2.11.2](setup-arch.md#2112-set-wi-fi-country-code). Ubuntu does not set it either, and has no `/etc/conf.d/wireless-regdom` (`wireless-regdb` is preinstalled)
+- Set it at every boot through the `cfg80211` kernel module
+
+  ```bash
+  echo "options cfg80211 ieee80211_regdom=VN" | sudo tee /etc/modprobe.d/cfg80211.conf
+  ```
+
+- Apply now `sudo iw reg set VN`
+- Check `iw reg get`: same as Arch. If it still shows `country 00` after a reboot, run `sudo update-initramfs -u` and reboot again
 
 ## 3. Applications
 

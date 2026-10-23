@@ -24,6 +24,9 @@
   - [2.8 Install `fcitx5`](#28-install-fcitx5)
   - [2.9 Setup console](#29-setup-console)
   - [2.10 Setup themes](#210-setup-themes)
+  - [2.11 Wi-Fi tuning](#211-wi-fi-tuning)
+    - [2.11.1 Disable Wi-Fi power save](#2111-disable-wi-fi-power-save)
+    - [2.11.2 Set Wi-Fi country code](#2112-set-wi-fi-country-code)
 - [3. Applications](#3-applications)
   - [3.1 Docker Engine](#31-docker-engine)
   - [3.2 VSCode](#32-vscode)
@@ -396,6 +399,45 @@ exec fish
 - Install Dracula theme `yay -S dracula-gtk-theme-git`
 - Install custom cursor and icons `yay -S papirus-icon-theme bibata-cursor-theme`
 - Select theme, cursor and icons via Tweaks
+
+### 2.11 Wi-Fi tuning
+
+#### 2.11.1 Disable Wi-Fi power save
+
+- Power save can cause latency spikes and dropped connections. Turning it off costs a little battery
+- Install `iw` `sudo pacman -S --needed iw`
+- Create configuration file `sudo vim /etc/NetworkManager/conf.d/wifi-powersave.conf`
+
+  ```ini
+  [connection]
+  # 2 = disable, 3 = enable
+  wifi.powersave = 2
+  ```
+
+- Restart NetworkManager `sudo systemctl restart NetworkManager`
+- Find the Wi-Fi interface name `iw dev` (e.g. `wlp1s0`), then check `iw dev <wifi_interface> get power_save`, which should print `Power save: off`
+
+#### 2.11.2 Set Wi-Fi country code
+
+- The country code (regulatory domain) tells the kernel which channels and transmit power are legal where you are. Unset, it uses `00` (world), the most restrictive rules: many channels are marked `no-IR`, so the card must wait to hear a router before using them (slower connects), and transmit power is capped low
+- Phones, Windows and macOS set it automatically, and Intel cards learn it from nearby routers. Arch does nothing, and MediaTek cards rely on the OS to set it
+- Install the database and set the country
+
+  ```bash
+  sudo pacman -S --needed wireless-regdb
+  sudo vim /etc/conf.d/wireless-regdom   # uncomment WIRELESS_REGDOM="VN"
+  ```
+
+- Apply now without rebooting. `reload` is needed if the package was just installed, because the kernel only reads the database at boot
+
+  ```bash
+  sudo iw reg reload
+  sudo iw reg set VN
+  ```
+
+- Check `iw reg get`
+  - ✅ `country VN: DFS-FCC` followed by frequency ranges
+  - ❌ Still `country 00`: reboot. The file above is applied automatically at every boot
 
 ## 3. Applications
 

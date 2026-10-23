@@ -33,6 +33,7 @@ The list below follows the Arch guide. See [Ubuntu differences](#ubuntu-2604-dif
 - Vietnamese input with `fcitx5` + Lotus
 - Terminal: `kitty` + `fish` + `starship` + Nerd Font, plus `fzf`, `zoxide`, `eza`, `bat`, `ripgrep`, `fd`
 - Dracula GTK theme, Papirus icons, Bibata cursor
+- Wi-Fi tuning: power save off, country code set to VN
 
 ### **3. Applications**
 
